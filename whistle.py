@@ -51,7 +51,7 @@ class NoteMapper():
     note_scales = range(12)
     # note_names = [
     #     'C', 'D', 'E', 'F', 'G', 'A', 'B']
-    note_scales = [0, 2, 3, 5, 7, 8, 10]  # From A
+    # note_scales = [0, 2, 3, 5, 7, 8, 10]  # From A
 
     def __init__(self):
         self._note_to_midi = {}
@@ -199,6 +199,9 @@ def main():
         if max(samples) > 4000:
             peak_frequency, power = get_peak_frequency(spectrum, input.rate)
             if not peak_frequency:
+                continue
+
+            if not 750 <= peak_frequency <= 2000:
                 continue
 
             if buffer:
