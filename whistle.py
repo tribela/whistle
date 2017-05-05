@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import audioop
+import logging
 import re
 import time
 
@@ -14,6 +15,10 @@ session = requests.session()
 session.headers.update({
     'User-Agent': 'whistle/0.0',
 })
+
+logger = logging.getLogger('whistle')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.INFO)
 
 
 class PyAudioInput():
@@ -134,7 +139,7 @@ def process_notes(notes):
         for i in range(1, len(notes))
     ]
 
-    print(diffs)
+    logger.info(diffs)
 
     if diffs == [1, 0]:
         session.put('http://omega2.lan:8000/switch/0')
@@ -179,11 +184,11 @@ def main():
             if len(buffer) > 10:
                 result = True
 
-                print(err_rate)
+                logger.debug(err_rate)
                 # Append to notes
                 octave, note = mapper.frequency_to_note(mean_freq)
                 name = '{}{}'.format(note, octave)
-                print(name)
+                logger.debug(name)
                 notes.append(name)
             buffer.clear()
         return result
@@ -216,7 +221,7 @@ def main():
                     last_time_note = now
 
             if now - last_time_note > 1 and notes:
-                print(notes)
+                logger.debug(notes)
                 process_notes(notes)
                 notes.clear()
 
