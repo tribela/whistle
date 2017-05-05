@@ -8,6 +8,8 @@ import time
 import pyaudio
 import requests
 
+import mpd
+
 from numpy import mean, std
 from numpy.fft import fft
 
@@ -19,6 +21,25 @@ session.headers.update({
 logger = logging.getLogger('whistle')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.INFO)
+
+
+class CustomMpd():
+
+    def __init__(self, host, port, password=None):
+        self.host = host
+        self.port = port
+        self.password = password
+
+    def __enter__(self):
+        cli = mpd.MPDClient()
+        cli.connect(self.host, self.port)
+        if self.password:
+            cli.password(self.password)
+        self.cli = cli
+        return cli
+
+    def __exit__(self, type, value, traceback):
+        self.cli.close()
 
 
 class PyAudioInput():
@@ -145,6 +166,24 @@ def process_notes(notes):
         session.put('http://omega2.lan:8000/switch/0')
     elif diffs == [-1, 0]:
         session.delete('http://omega2.lan:8000/switch/0')
+
+    elif diffs == [-1, 1]:
+        session.put('http://tsubaki:31337/switch')
+    elif diffs == [1, -1]:
+        session.delete('http://tsubaki:31337/switch')
+
+    elif diffs == [0, 1]:
+        with CustomMpd('tsubaki', 6600, 'derkuchen') as cli:
+            cli.play()
+    elif diffs == [0, -1]:
+        with CustomMpd('tsubaki', 6600, 'derkuchen') as cli:
+            cli.stop()
+
+    elif diffs == [-1, -1, -1]:
+        session.delete('http://tsubaki:31337/switch')
+        session.delete('http://omega2.lan:8000/switch/0')
+        with CustomMpd('tsubaki', 6600, 'derkuchen') as cli:
+            cli.stop()
 
 
 def process_note(note):
