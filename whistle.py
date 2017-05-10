@@ -202,6 +202,7 @@ def main():
     last_time_note = time.time()
 
     gap = 0.1  # seconds
+    end_gap = 1.0
 
     def process_buffer(freq=None):
         # Check if need to process note
@@ -242,7 +243,7 @@ def main():
         now = time.time()
         if max(samples) > 4000:
             peak_frequency, power = get_peak_frequency(spectrum, input.rate)
-            if not peak_frequency:
+            if not peak_frequency or power < 700000:
                 continue
 
             if not 750 <= peak_frequency <= 2000:
@@ -254,15 +255,15 @@ def main():
 
             last_time = now
             buffer.append(peak_frequency)
-        else:
-            if now - last_time > gap and buffer:
-                if process_buffer():
-                    last_time_note = now
 
-            if now - last_time_note > 1 and notes:
-                logger.debug(notes)
-                process_notes(notes)
-                notes.clear()
+        if now - last_time > gap and buffer:
+            if process_buffer():
+                last_time_note = now
+
+        if now - last_time_note > end_gap and notes:
+            logger.debug(notes)
+            process_notes(notes)
+            notes.clear()
 
 
 if __name__ == '__main__':
