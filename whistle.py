@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import subprocess
 import audioop
 import logging
+import os
 import re
+import subprocess
 import time
 
 import pyaudio
@@ -20,7 +21,8 @@ session.headers.update({
 
 logger = logging.getLogger('whistle')
 logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.INFO)
+loglevel = getattr(logging, os.getenv('LOGLEVEL', 'INFO').upper())
+logger.setLevel(loglevel)
 
 
 class CustomMpd():

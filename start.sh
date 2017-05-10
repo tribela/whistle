@@ -6,4 +6,5 @@ eval "$(~/.pyenv/bin/pyenv virtualenv-init -)"
 export PYENV_VERSION='home-auto'
 
 export PYTHONUNBUFFERED=1
-exec python ${BASEDIR}/whistle.py
+echo python ${BASEDIR}/whistle.py $@
+exec python ${BASEDIR}/whistle.py $@
