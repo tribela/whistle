@@ -73,13 +73,13 @@ class ConsoleOutput():
 
 
 class NoteMapper():
-    note_names = [
-        'C', 'C#', 'D', 'D#', 'E',
-        'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    note_scales = range(12)
     # note_names = [
-    #     'C', 'D', 'E', 'F', 'G', 'A', 'B']
-    # note_scales = [0, 2, 3, 5, 7, 8, 10]  # From A
+    #     'C', 'C#', 'D', 'D#', 'E',
+    #     'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    # note_scales = range(12)
+    note_names = [
+        'C', 'D', 'E', 'F', 'G', 'A', 'B']
+    note_scales = [0, 2, 3, 5, 7, 8, 10]  # From A
 
     def __init__(self):
         self._note_to_midi = {}
