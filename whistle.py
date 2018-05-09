@@ -3,7 +3,6 @@ import audioop
 import logging
 import os
 import re
-import subprocess
 import time
 
 import pyaudio
@@ -170,21 +169,21 @@ def process_notes(notes):
         session.delete('http://omega2.lan:8000/switch/0')
 
     elif diffs == [-1, 1]:
-        session.put('http://tsubaki:31337/switch')
+        session.put('http://tsubaki.local:31337/switch')
     elif diffs == [1, -1]:
-        session.delete('http://tsubaki:31337/switch')
+        session.delete('http://tsubaki.local:31337/switch')
 
     elif diffs == [0, 1]:
-        with CustomMpd('tsubaki', 6600, 'derkuchen') as cli:
+        with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
             cli.play()
     elif diffs == [0, -1]:
-        with CustomMpd('tsubaki', 6600, 'derkuchen') as cli:
+        with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
             cli.stop()
 
     elif diffs == [-1, -1, -1]:
-        session.delete('http://tsubaki:31337/switch')
+        session.delete('http://tsubaki.local:31337/switch')
         session.delete('http://omega2.lan:8000/switch/0')
-        with CustomMpd('tsubaki', 6600, 'derkuchen') as cli:
+        with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
             cli.stop()
 
 
