@@ -164,27 +164,50 @@ def process_notes(notes):
     logger.info(diffs)
 
     if diffs == [1, 0]:
-        session.put('http://omega2.lan:8000/switch/0')
+        try:
+            session.put('http://omega2.lan:8000/switch/0')
+        except Exception as e:
+            logger.error(e)
     elif diffs == [-1, 0]:
-        session.delete('http://omega2.lan:8000/switch/0')
+        try:
+            session.delete('http://omega2.lan:8000/switch/0')
+        except Exception as e:
+            logger.error(e)
 
     elif diffs == [-1, 1]:
-        session.put('http://tsubaki.local:31337/switch')
+        try:
+            session.put('http://tsubaki.local:31337/switch')
+        except Exception as e:
+            logger.error(e)
     elif diffs == [1, -1]:
-        session.delete('http://tsubaki.local:31337/switch')
+        try:
+            session.delete('http://tsubaki.local:31337/switch')
+        except Exception as e:
+            logger.error(e)
 
     elif diffs == [0, 1]:
-        with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
-            cli.play()
+        try:
+            with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
+                cli.play()
+                cli.stop()
+        except Exception as e:
+            logger.error(e)
+
     elif diffs == [0, -1]:
-        with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
-            cli.stop()
+        try:
+            with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
+                cli.stop()
+        except Exception as e:
+            logger.error(e)
 
     elif diffs == [-1, -1, -1]:
-        session.delete('http://tsubaki.local:31337/switch')
-        session.delete('http://omega2.lan:8000/switch/0')
-        with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
-            cli.stop()
+        try:
+            session.delete('http://tsubaki.local:31337/switch')
+            session.delete('http://omega2.lan:8000/switch/0')
+            with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
+                cli.stop()
+        except Exception as e:
+            logger.error(e)
 
 
 def process_note(note):
