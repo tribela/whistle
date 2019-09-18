@@ -23,6 +23,10 @@ logger.addHandler(logging.StreamHandler())
 loglevel = getattr(logging, os.getenv('LOGLEVEL', 'INFO').upper())
 logger.setLevel(loglevel)
 
+YEELIGHT_BASE = 'http://localhost:31337/'
+SWITCH_BASE = 'http://omega2.local:8000/'
+MPD_HOST = 'sakura.local'
+
 
 class CustomMpd():
 
@@ -176,35 +180,35 @@ def process_notes(notes):
 
     elif diffs == [-1, 1]:
         try:
-            session.put('http://tsubaki.local:31337/switch')
+            session.put(f'{YEELIGHT_BASE}switch')
         except Exception as e:
             logger.error(e)
     elif diffs == [1, -1]:
         try:
-            session.delete('http://tsubaki.local:31337/switch')
+            session.delete(f'{YEELIGHT_BASE}switch')
         except Exception as e:
             logger.error(e)
 
     elif diffs == [0, 1]:
         try:
-            with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
+            with CustomMpd(MPD_HOST, 6600, 'derkuchen') as cli:
                 cli.play()
-                cli.stop()
+                # cli.stop()
         except Exception as e:
             logger.error(e)
 
     elif diffs == [0, -1]:
         try:
-            with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
+            with CustomMpd(MPD_HOST, 6600, 'derkuchen') as cli:
                 cli.stop()
         except Exception as e:
             logger.error(e)
 
     elif diffs == [-1, -1, -1]:
         try:
-            session.delete('http://tsubaki.local:31337/switch')
-            session.delete('http://omega2.lan:8000/switch/0')
-            with CustomMpd('tsubaki.local', 6600, 'derkuchen') as cli:
+            session.delete(f'{YEELIGHT_BASE}switch')
+            session.delete(f'{SWITCH_BASE}switch/0')
+            with CustomMpd(MPD_HOST, 6600, 'derkuchen') as cli:
                 cli.stop()
         except Exception as e:
             logger.error(e)
@@ -212,9 +216,9 @@ def process_notes(notes):
 
 def process_note(note):
     if note == 'A5':
-        session.delete('http://omega2.lan:8000/switch/0')
+        session.delete('{SWITCH_BASE}switch/0')
     elif note == 'C6':
-        session.put('http://omega2.lan:8000/switch/0')
+        session.put('{SWITCH_BASE}switch/0')
 
 
 def main():
