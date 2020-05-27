@@ -167,25 +167,44 @@ def process_notes(notes):
 
     logger.info(diffs)
 
-    if diffs == [1, 0]:
+    if diffs == [-1, 1]:
         try:
             session.put('http://omega2.lan:8000/switch/0')
         except Exception as e:
             logger.error(e)
-    elif diffs == [-1, 0]:
+    elif diffs == [1, -1]:
         try:
             session.delete('http://omega2.lan:8000/switch/0')
         except Exception as e:
             logger.error(e)
 
-    elif diffs == [-1, 1]:
+    elif diffs == [1, 0]:
         try:
             session.put(f'{YEELIGHT_BASE}switch')
         except Exception as e:
             logger.error(e)
-    elif diffs == [1, -1]:
+    elif diffs == [-1, 0]:
         try:
             session.delete(f'{YEELIGHT_BASE}switch')
+        except Exception as e:
+            logger.error(e)
+
+    elif diffs == [1, -1, 1]:
+        try:
+            session.put('http://omega2.lan:8000/switch/0')
+        except Exception as e:
+            logger.error(e)
+        try:
+            session.delete(f'{YEELIGHT_BASE}switch')
+        except Exception as e:
+            logger.error(e)
+    elif diffs == [-1, 1, -1]:
+        try:
+            session.delete('http://omega2.lan:8000/switch/0')
+        except Exception as e:
+            logger.error(e)
+        try:
+            session.put(f'{YEELIGHT_BASE}switch')
         except Exception as e:
             logger.error(e)
 
