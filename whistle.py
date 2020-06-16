@@ -268,7 +268,7 @@ def main():
         result = False
         # or diff > (2 ** (1/12))\
         if err_rate > 0.03 or now - last_time > gap:
-            if len(buffer) > 10:
+            if len(buffer) > 5:
                 result = True
 
                 logger.debug(err_rate)
@@ -290,11 +290,12 @@ def main():
         now = time.time()
         if max(samples) > 4000:
             peak_frequency, power = get_peak_frequency(spectrum, input.rate)
-            if not peak_frequency or power < 700000:
+            if not peak_frequency or power < 2700000:
                 continue
 
             if not 750 <= peak_frequency <= 2000:
                 continue
+            logger.debug(f'freq: {peak_frequency}')
 
             if buffer:
                 if process_buffer(peak_frequency):
@@ -308,7 +309,7 @@ def main():
                 last_time_note = now
 
         if now - last_time_note > end_gap and notes:
-            logger.debug(notes)
+            logger.info(notes)
             process_notes(notes)
             notes.clear()
 
