@@ -288,21 +288,6 @@ def main():
         spectrum = get_spectrum(samples)
 
         now = time.time()
-        if max(samples) > 4000:
-            peak_frequency, power = get_peak_frequency(spectrum, input.rate)
-            if not peak_frequency or power < 2700000:
-                continue
-
-            if not 750 <= peak_frequency <= 2000:
-                continue
-            logger.debug(f'freq: {peak_frequency}')
-
-            if buffer:
-                if process_buffer(peak_frequency):
-                    last_time_note = now
-
-            last_time = now
-            buffer.append(peak_frequency)
 
         if now - last_time > gap and buffer:
             if process_buffer():
@@ -312,6 +297,22 @@ def main():
             logger.info(notes)
             process_notes(notes)
             notes.clear()
+
+        if max(samples) > 4000:
+            peak_frequency, power = get_peak_frequency(spectrum, input.rate)
+            if not peak_frequency or power < 2700000:
+                continue
+
+            if not 750 <= peak_frequency <= 2000:
+                continue
+            logger.debug(f'freq: {peak_frequency}, power: {power}')
+
+            if buffer:
+                if process_buffer(peak_frequency):
+                    last_time_note = now
+
+            last_time = now
+            buffer.append(peak_frequency)
 
 
 if __name__ == '__main__':
